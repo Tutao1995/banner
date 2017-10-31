@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		*{padding:0;margin:0;}
+		a{text-decoration: none;}
+		a>img{display: block;border:none;}
+		li{list-style: none;}
+		#banner{width:520px;height:280px;margin:50px auto 0;position: relative;overflow: hidden;}
+		#banner .pic{width:520px;height:280px;}
+		#banner .pic ul{width: 100%;}
+		#banner .pic li{width:520px;height:280px;position: absolute;display: none;}
+		#banner .tab{width:100px;height:12px;position: absolute;bottom: 18px;left:50%;margin-left: -50px;background:rgba(255,255,255,.3);border-radius: 10px;}
+		#banner .tab li{width:10px;height:10px;border-radius: 50%;float: left;background: #B7B7B7;margin:1px 5px;cursor: pointer}
+		.on{background: #f60!important;}
+		#banner .btn a{width:30px;line-height: 40px;background:#333;background:rgba(0,0,0,.3);color: #fff;position: absolute;top:50%;margin-top: -20px;font-size: 20px;text-align: center;display: none;}
+		#left{left:10px;}
+		#right{right:10px;}
+	</style>
+</head>
+<body>
+	
+	<div id="banner">
+		<div class="pic">
+			<ul>
+				<li><a href=""><img src="images/1.jpg"></a></li>
+				<li><a href=""><img src="images/2.jpg"></a></li>
+				<li><a href=""><img src="images/3.jpg"></a></li>
+				<li><a href=""><img src="images/4.jpg"></a></li>
+				<li><a href=""><img src="images/5.jpg"></a></li>
+			</ul>
+		</div>
+		<div class="tab">
+			<ul><li></li><li></li><li></li><li></li><li></li></ul>
+		</div>
+		<div class="btn">
+			<a href="javascript:void(0);" id="left">&lt;</a>
+			<a href="javascript:void(0);" id="right">&gt;</a>
+		</div>
+	</div>
+	<script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+	<script>
+		(function(){
+			var $tabLi = $("#banner .tab li");
+			var $picLi = $("#banner .pic li");
+			var $btns = $("#banner .btn a");
+			var $banner = $("#banner");
+			var width = $banner.width();
+			var index = 0;
+			var timer = null;
+			var nowTime = 0;
+			//初始化给第一个底部的圆圈增加on样式
+			$tabLi.eq(0).addClass("on");
+			//初始化ul对象的位置
+			$picLi.eq(0).css("display","block");
+			auto();
+			//鼠标移入banner，显示a链接
+			$("#banner").hover(function(){
+				$btns.show();
+				clearInterval(timer);
+			},function(){
+				$btns.hide();
+				auto();
+			});
+			//点击底部圆圈
+			$tabLi.click(function(){
+				//当前索引li显示on
+				// $picLi.eq(index).stop(true,true).fadeOut();
+				// $tabLi.eq(index).removeClass("on");
+				//当前的索引值
+				var This = this;
+				change(function(){
+					index = $(This).index();
+				});
+				// $picLi.eq(index).stop(true,true).fadeIn();
+				// $tabLi.eq(index).addClass("on");
+				//$(this).addClass("on").siblings().removeClass("on");
+			});
+			//点击左右按钮
+			$btns.click(function(){
+				var i = $(this).index();
+				change(function(){
+					if(i){
+						index++;
+						index %= $tabLi.length;
+					}else{
+						index--;
+						if(index<0)index = $tabLi.length-1;
+					}
+				});
+			});
+
+			function auto(){
+				timer = setInterval(function(){
+					change(function(){
+						index++;
+						index %= $tabLi.length;
+					});
+				},2000);
+			};
+			//封装代码change
+			function change(callback){
+				$picLi.eq(index).stop(true,true).fadeOut();
+				$tabLi.eq(index).removeClass("on");
+				callback&&callback();
+				$picLi.eq(index).stop(true,true).fadeIn();
+				$tabLi.eq(index).addClass("on");
+			};
+		})();
+	</script>
+</body>
+</html>
